@@ -180,7 +180,8 @@ class Person(PersonMixin, models.Model):
     prefix = models.CharField(max_length=20, db_index=True, null=True, blank=True)
     last_name = models.CharField(max_length=128, db_index=True, null=True, blank=True)
     full_name = models.CharField(max_length=256, db_index=True, null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
+    city = models.CharField(max_length=256, db_index=True, null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True, db_index=True)
 
     props = HStoreField()
 
@@ -194,7 +195,8 @@ class PersonSource(PersonMixin, PolymorphicModel):
     prefix = models.CharField(max_length=20, db_index=True, null=True, blank=True)
     last_name = models.CharField(max_length=128, db_index=True, null=True, blank=True)
     full_name = models.CharField(max_length=256, db_index=True, null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
+    city = models.CharField(max_length=256, db_index=True, null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True, db_index=True)
 
     props = HStoreField()
     master = models.ForeignKey(Person, null=True, blank=True, related_name="sources")
