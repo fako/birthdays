@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function, divisi
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 
-from birthdays.models import Person, SoccerSource
+from birthdays.models import Person, SoccerSource, SchoolBankSource
 from birthdays.helpers import output_person
 
 
@@ -21,6 +21,17 @@ class Command(BaseCommand):
         for player in query_set:
             if player.master.sources.filter(props__has_key="city").exists():
                 output_person(player.master)
+
+    @staticmethod
+    def alumni_with_city():
+        print(SchoolBankSource.objects.filter(master__isnull=False).count())
+        query_set = SchoolBankSource.objects \
+            .annotate(source_num=Count("master__sources")) \
+            .filter(source_num__gte=2) \
+            .order_by("-source_num")
+        for alumni in query_set:
+            if alumni.master.sources.filter(props__has_key="city").exists():
+                output_person(alumni.master)
 
     @staticmethod
     def juice():
