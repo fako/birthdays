@@ -16,3 +16,7 @@ class KNACSource(PersonSource):
 
 class FiftyPlusSource(PersonSource):
     pass
+
+
+class HobbyJournalSource(PersonSource):
+    pass

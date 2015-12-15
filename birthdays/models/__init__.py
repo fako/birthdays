@@ -6,4 +6,4 @@ from .sources.registers import PhoneBookSource, WieOWieSource, SchoolBankSource
 from .sources.sports import SoccerSource, BilliardSource, HockeySource, TriathlonSource
 from .sources.guilds import NBASource, BIGSource
 from .sources.casting import ActeursSpotSource, BenfCastingSource
-from .sources.societies import KNACSource, MusicSocietySource, FiftyPlusSource
+from .sources.societies import KNACSource, MusicSocietySource, FiftyPlusSource, HobbyJournalSource

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from birthdays.models import (Person, NBASource, BIGSource, PhoneBookSource, WieOWieSource, WikiSource, SoccerSource,
                               SchoolBankSource, ActeursSpotSource, BenfCastingSource, BilliardSource, HockeySource,
-                              KNACSource, TriathlonSource, MusicSocietySource, FiftyPlusSource)
+                              KNACSource, TriathlonSource, MusicSocietySource, FiftyPlusSource, HobbyJournalSource)
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -29,3 +29,4 @@ admin.site.register(KNACSource, PersonSourceAdmin)
 admin.site.register(TriathlonSource, PersonSourceAdmin)
 admin.site.register(MusicSocietySource, PersonSourceAdmin)
 admin.site.register(FiftyPlusSource, PersonSourceAdmin)
+admin.site.register(HobbyJournalSource, PersonSourceAdmin)
