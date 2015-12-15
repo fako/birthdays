@@ -52,6 +52,34 @@ class Command(BaseCommand):
             person_source.master = master
             person_source.save()
 
+    @staticmethod
+    def add_cities(source_model):
+        for person_source in source_model.objects.filter(props__haskey="city"):
+            if hasattr(person_source, 'master'):
+                person_source.city = person_source.props["city"]
+            else:
+                print(", ".join([
+                    source.props["city"]
+                    for source in person_source.sources
+                    if source.props.get("city")
+                ]))
+            person_source.save()
+
+    @staticmethod
+    def add_city_person(source_model):
+        from birthdays.models import Person
+        for person in Person.objects.all():
+            person.city = ", ".join([
+                source.props["city"]
+                for source in person.sources.all()
+                if source.props.get("city")
+            ])
+            person.save()
+
+    @staticmethod
+    def add_city_soccer_source(source_model):
+        pass
+
     def add_arguments(self, parser):
         parser.add_argument(
             'extend_type',
