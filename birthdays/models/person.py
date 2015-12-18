@@ -151,11 +151,13 @@ class PersonMixin(object):
 
     def split_full_name(self, force=False):
 
-        # TODO: sanitize data on included '-' and '?' and possible other weird characters
-
         if (not self.full_name or (self.first_name and self.last_name)) and not force:
             return
-        names = self.full_name.split(" ")
+        translate_table = string.maketrans("-,()@&", "      ")
+        names = [
+            name for name in self.full_name.translate(translate_table).split(" ")
+            if name
+        ]
         if not len(names) > 1:
             return
 
