@@ -17,19 +17,27 @@ class Command(BaseCommand):
 
     @staticmethod
     def find(first_name=None, last_name=None, full_name=None, initials=None, prefix=None, birth_date=None,
-             batch_size=0, page_number=1, **kwargs):
+             batch_size=0, page_number=1, fuzzy=False, **kwargs):
         # Making the extra kwargs work with the HStore field
         filters = {"props__{}".format(key): value for key, value in six.iteritems(kwargs) if value is not None}
         # Keeping IDE auto complete for the method by writing out the definition.
         # Putting values back in a dictionary (like kwargs) to iterate over the items.
-        fixed_arguments = {
-            "first_name": first_name,
-            "last_name": last_name,
-            "full_name": full_name,
-            "initials": initials,
-            "prefix": prefix,
-            "birth_date": birth_date
+        string_arguments = {
+            "first_name__{}": first_name,
+            "last_name__{}": last_name,
+            "full_name__{}": full_name,
+            "initials__{}": initials,
+            "prefix__{}": prefix,
         }
+
+        fixed_arguments = {
+            key.format("iexact" if not fuzzy else "icontains"): value
+            for key, value in six.iteritems(string_arguments)
+        }
+        fixed_arguments.update({
+            "birth_date": birth_date
+
+        })
         filters.update({key: value for key, value in six.iteritems(fixed_arguments) if value is not None})
         query_set = PersonSource.objects.filter(**filters)
         if batch_size:
@@ -103,7 +111,7 @@ class Command(BaseCommand):
             type=int,
             nargs="?",
             default=0,
-            help="",
+            help="The size of pages that the results should be divided in",
             dest="batch_size"
         )
         parser.add_argument(
@@ -111,8 +119,16 @@ class Command(BaseCommand):
             type=int,
             nargs="?",
             default=1,
-            help="",
+            help="The page you want to view",
             dest="page_number"
+        )
+        parser.add_argument(
+            '-F', '--fuzzy',
+            action="store_true",
+            nargs="?",
+            default=False,
+            help="",
+            dest="fuzzy"
         )
 
     def handle(self, no_color=False, traceback=False, verbosity=1, *args, **options):
