@@ -150,24 +150,66 @@ class PersonMixin(object):
                 self.full_name = "{} {} {}".format(self.first_name, self.prefix, self.last_name)
 
     def split_full_name(self, force=False):
-        if (not self.full_name or (self.first_name and self.last_name)) or force:
+
+        # TODO: sanitize data on included '-' and '?' and possible other weird characters
+
+        if (not self.full_name or (self.first_name and self.last_name)) and not force:
             return
-        names = self.full_name.lower().split(" ")
+        names = self.full_name.split(" ")
         if not len(names) > 1:
             return
 
-        last_name = names.pop()
-        first_names = []
-        prefixes = []
+        if len(names) == 2:
+            self.first_name, self.last_name = names
+            if self.is_real_last_name(self.last_name):
+                self.save()
+            return  # early return prevents indentation, which is easier to read IMO
+
+        # prefix check
+        pos_prefix = []
         for name in names:
             if name in self.prefixes:
-                prefixes.append(name)
-            else:
-                first_names.append(name)
+                pos_prefix.append(names.index(name))  # append is not functional in Python and always returns None (aka null)
 
-        self.prefix = " ".join(prefixes) if prefixes else None
-        self.last_name = "{} {}".format(self.prefix, last_name.capitalize()) if self.prefix else last_name.capitalize()
-        self.first_name = " ".join(map(string.capitalize, first_names))
+        # split with single first name and prefix
+        if pos_prefix[0] == 1:
+            self.first_name = " ".join(names[:1]).strip()
+            self.last_name = " ".join(names[1:]).strip()
+            self.prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
+            if self.is_real_last_name(self.last_name):
+                self.save()
+
+        # split with double first name or double last name or both
+        else:
+
+            reversed_names = reverse(names)
+            found_last_names = []
+            for i, name in enumerate(names):
+
+                possible_last_name = " ".join(
+                    reverse(reversed_names[:i+1])  # starting from the end we take increasingly more names as we loop
+                )
+                if self.is_real_last_name(possible_last_name):
+                    found_last_names.append(possible_last_name)
+                    reversed_names = reversed_names[i+1:]  # after storage of the name we cut out the names we included in our found name
+                    continue  # explicitly continue with finding second last names, possibly problematic with first names like last names, break instead?
+
+            if found_last_names:
+                # for now we'll store double last names and first names together in one field, so we only need one split
+                split_pos = self.full_name.find(found_last_names[-1])
+                self.first_name = self.full_name[:split_pos].strip()
+                self.last_name = self.full_name[split_pos:].strip()
+                # we can only really store prefixes with single last names
+                if len(found_last_names) == 1:
+                    self.prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
+                self.save()
+
+        return
+
+    @staticmethod
+    def is_real_last_name(last_name_check):
+        from birthdays.models import PhoneBookSource  # inline import to prevent circular imports
+        return PhoneBookSource.objects.filter(last_name__iexact=last_name_check).exist()  # case-insensitive db query for the name in PhoneBook records
 
     def __unicode__(self):
         return "{} {}".format(self.__class__.__name__, self.id)
