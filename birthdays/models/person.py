@@ -153,7 +153,7 @@ class PersonMixin(object):
 
         if (not self.full_name or (self.first_name and self.last_name)) and not force:
             return
-        translate_table = string.maketrans("-,()@&", "      ")
+        translate_table = dict((ord(char), " ", ) for char in "-,()@&")
         names = [
             name for name in self.full_name.translate(translate_table).split(" ")
             if name
