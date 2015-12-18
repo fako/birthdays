@@ -77,6 +77,13 @@ class Command(BaseCommand):
             person.save()
 
     @staticmethod
+    def remove_minors(source_model):
+        from datetime import datetime
+        source_model.objects \
+            .filter(birth_date__lt=datetime.strptime("31-10-2015", "%d-%m-%Y")) \
+            .delete()
+
+    @staticmethod
     def add_city_soccer_source(source_model):
         pass
 
