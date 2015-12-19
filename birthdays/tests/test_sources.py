@@ -47,6 +47,54 @@ class TestSources(TestCase):
         self.assertEqual(instance.first_name, "Ellen")
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "Bijsterbosch")
+        instance = Person()
+        instance.full_name = "Malou de Roy van Zuydewijn"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Malou")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "de Roy van Zuydewijn")
+        instance = Person()
+        instance.full_name = "Syntia van der Made (van der Spek)"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Synthia")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "van der Made, van der Spek")
+        instance = Person()
+        instance.full_name = "Bart-Jan Dokter"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Bart Jan")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "Dokter")
+        instance = Person()
+        instance.full_name = "Fako Berkers Raaphorst"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Fako")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "Berkers, Raaphorst")
+        instance = Person()
+        instance.full_name = "Gert Sup?r"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Gert")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "Sup?r")
+        instance = Person()
+        instance.full_name = "zzzzz zzzzzzzz"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, None)
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, None)
+        instance = Person()
+        instance.full_name = "Zwarte Piet"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, None)
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, None)
+        instance = Person()
+        instance.full_name = "Sjaak Frans"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Sjaak")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "Frans")
 
     def test_soccer_split_name(self):
         instance = SoccerSource()
