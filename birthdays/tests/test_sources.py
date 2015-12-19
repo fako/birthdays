@@ -42,6 +42,12 @@ class TestSources(TestCase):
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "Berkers")
         instance = Person()
+        instance.full_name = "Lotte Beatrice van der Snoek"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Lotte Beatrice")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "van der Snoek")
+        instance = Person()
         instance.full_name = "Ellen Bijsterbosch"
         instance.split_full_name()
         self.assertEqual(instance.first_name, "Ellen")
@@ -54,9 +60,9 @@ class TestSources(TestCase):
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "de Roy van Zuydewijn")
         instance = Person()
-        instance.full_name = "Syntia van der Made (van der Spek)"
+        instance.full_name = "Synthia Rosalie van der Made (van der Spek)"
         instance.split_full_name()
-        self.assertEqual(instance.first_name, "Synthia")
+        self.assertEqual(instance.first_name, "Synthia Rosalie")
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "van der Made, van der Spek")
         instance = Person()
@@ -74,9 +80,9 @@ class TestSources(TestCase):
         instance = Person()
         instance.full_name = "Gert Sup?r"
         instance.split_full_name()
-        self.assertEqual(instance.first_name, "Gert")
+        self.assertEqual(instance.first_name, None)
         self.assertEqual(instance.prefix, None)
-        self.assertEqual(instance.last_name, "Sup?r")
+        self.assertEqual(instance.last_name, None)
         instance = Person()
         instance.full_name = "zzzzz zzzzzzzz"
         instance.split_full_name()
