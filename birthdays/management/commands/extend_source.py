@@ -58,15 +58,10 @@ class Command(BaseCommand):
 
     @staticmethod
     def add_cities(source_model):
-        for person_source in source_model.objects.filter(props__haskey="city"):
-            if hasattr(person_source, 'master'):
-                person_source.city = person_source.props["city"]
-            else:
-                print(", ".join([
-                    source.props["city"]
-                    for source in person_source.sources
-                    if source.props.get("city")
-                ]))
+        for person_source in source_model.objects.filter(props__has_key="city"):
+            if person_source.city:
+                continue
+            person_source.city = person_source.props["city"]
             person_source.save()
 
     @staticmethod
