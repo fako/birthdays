@@ -174,7 +174,7 @@ class PersonMixin(object):
                 pos_prefix.append(names.index(name))  # append is not functional in Python and always returns None (aka null)
 
         # split with single first name and prefix
-        if pos_prefix[0] == 1:
+        if len(pos_prefix) and pos_prefix[0] == 1:
             self.first_name = " ".join(names[:1]).strip()
             self.last_name = " ".join(names[1:]).strip()
             self.prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
@@ -184,12 +184,12 @@ class PersonMixin(object):
         # split with double first name or double last name or both
         else:
 
-            reversed_names = reverse(names)
+            reversed_names = list(reversed(names))
             found_last_names = []
             for i, name in enumerate(names):
 
                 possible_last_name = " ".join(
-                    reverse(reversed_names[:i+1])  # starting from the end we take increasingly more names as we loop
+                    reversed(reversed_names[:i+1])  # starting from the end we take increasingly more names as we loop
                 )
                 if self.is_real_last_name(possible_last_name):
                     found_last_names.append(possible_last_name)
@@ -211,7 +211,7 @@ class PersonMixin(object):
     @staticmethod
     def is_real_last_name(last_name_check):
         from birthdays.models import PhoneBookSource  # inline import to prevent circular imports
-        return PhoneBookSource.objects.filter(last_name__iexact=last_name_check).exist()  # case-insensitive db query for the name in PhoneBook records
+        return PhoneBookSource.objects.filter(last_name__iexact=last_name_check).exists()  # case-insensitive db query for the name in PhoneBook records
 
     def __unicode__(self):
         return "{} {}".format(self.__class__.__name__, self.id)
