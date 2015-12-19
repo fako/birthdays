@@ -11,7 +11,13 @@ class TestInputCommand(TestCase):
     fixtures = ["test.json"]
 
     def test_from_fixture(self):
-        InputCommand.from_fixture("birthdays/tests/mock-fixture.json", "PersonSourceMockOne", {"voornaam": "first_name"}, "%Y-%m-%d")
+        InputCommand.from_fixture(
+            "birthdays/tests/mock-fixture.json",
+            "PersonSourceMockOne",
+            {"voornaam": "first_name"},
+            "%Y-%m-%d",
+            ""  # TODO: test exclude
+        )
         self.assertEqual(PersonSourceMockOne.objects.count(), 9)  # 6 from Django fixtures, 3 from file.
         mp = PersonSourceMockOne.objects.last()
         self.assertTrue(mp.props["occupation"])
@@ -20,3 +26,4 @@ class TestInputCommand(TestCase):
         self.assertFalse(mp.full_name)
         self.assertTrue(mp.birth_date)
         self.assertEqual(sorted(mp.props.keys()), sorted(['occupation']))
+        self.skipTest("Test exclude")
