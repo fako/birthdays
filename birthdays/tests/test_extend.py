@@ -16,6 +16,7 @@ class TestExtendCommand(TestCase):
         self.assertEqual(Person.objects.count(), 2)
         mp = Person.objects.last()
         self.assertEqual(mp.sources.count(), 1)
+        self.skipTest("Test adding a city")
 
     def test_extend_master(self):
         ExtendCommand.add_to_master(PersonSourceMockOne)

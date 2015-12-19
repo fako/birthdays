@@ -34,9 +34,13 @@ class Command(BaseCommand):
                         last_name=person_source.last_name,
                         full_name=person_source.full_name,
                         birth_date=person_source.birth_date,
+                        city=person_source.city,
                         props=person_source.props
                     )
                 person_source.master = master
+                if person_source.city:
+                    master.city = "" if master.city is None else master.city
+                    master.city += ", {}".format(person_source.city.lower().capitalize())
                 person_source.save()
 
     @staticmethod
