@@ -2,7 +2,7 @@ from __future__ import unicode_literals, absolute_import, print_function, divisi
 
 from django.test import TestCase
 
-from birthdays.management.commands.combine import Command as CombineCommand
+from birthdays.management.commands.combine_sources import Command as CombineCommand
 from birthdays.models import GeneratedPerson
 
 

@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function, divisi
 from django.test import TestCase
 from django.db.models import Count
 
-from birthdays.management.commands.extend import Command as ExtendCommand
+from birthdays.management.commands.extend_source import Command as ExtendCommand
 from birthdays.models import Person, PersonSourceMockOne, PersonSourceMockTwo
 
 
