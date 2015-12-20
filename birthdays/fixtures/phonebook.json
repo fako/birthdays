@@ -1,0 +1,107 @@
+[
+{
+    "fields": {
+        "first_name": null,
+        "last_name": "van der Spek",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 1
+},
+{
+    "fields": {
+        "first_name": null,
+        "last_name": "Berkers",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 2
+},
+{
+    "fields": {
+        "first_name": null,
+        "last_name": "van der Snoek",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 3
+},
+{
+    "fields": {
+        "first_name": null,
+        "last_name": "Bijsterbosch",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 4
+},
+{
+    "fields": {
+        "first_name": null,
+        "last_name": "de Roy van Zuydewijn",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 5
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 1
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 2
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 3
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 4
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 5
+}
+]
