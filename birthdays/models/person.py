@@ -153,7 +153,7 @@ class PersonMixin(object):
 
         if (not self.full_name or (self.first_name and self.last_name)) and not force:
             return
-        translate_table = dict((ord(char), " ", ) for char in "-,()@&")
+        translate_table = dict((ord(char), " ", ) for char in ",()@&")
         names = [
             name for name in self.full_name.translate(translate_table).split(" ")
             if name
@@ -164,6 +164,7 @@ class PersonMixin(object):
         first_name = None
         last_name = None
         prefix = None
+        prefixes_are_sequential = False
 
         if len(names) == 2:
             first_name, last_name = names
@@ -175,33 +176,35 @@ class PersonMixin(object):
                 pos_prefix.append(names.index(name))  # append is not functional in Python and always returns None (aka null)
 
         # split with single first name and prefix
-        if len(pos_prefix) and pos_prefix[0] == 1:
-            first_name = " ".join(names[:1]).strip()
-            last_name = " ".join(names[1:]).strip()
-            prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
+        if len(pos_prefix):
+            prefixes_are_sequential = pos_prefix == range(pos_prefix[0], pos_prefix[-1]+1)
+            if pos_prefix[0] == 1 and prefixes_are_sequential:
+                first_name = " ".join(names[:1]).strip()
+                last_name = " ".join(names[1:]).strip()
+                prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
 
         # split with double first name or double last name or both
         if first_name is None and last_name is None:
-
             reversed_names = list(reversed(names))
             found_last_names = []
-            for i, name in enumerate(names):
-
+            index_correction = 0
+            for index, name in enumerate(names):
+                real_index = index - index_correction
                 possible_last_name = " ".join(
-                    reversed(reversed_names[:i+1])  # starting from the end we take increasingly more names as we loop
+                    reversed(reversed_names[:real_index+1])  # starting from the end we take increasingly more names as we loop
                 )
                 if self.is_real_last_name(possible_last_name):
                     found_last_names.append(possible_last_name)
-                    reversed_names = reversed_names[i+1:]  # after storage of the name we cut out the names we included in our found name
+                    reversed_names = reversed_names[real_index+1:]  # after storage of the name we cut out the names we included in our found name
+                    index_correction += real_index+1
                     continue  # explicitly continue with finding second last names, possibly problematic with first names like last names, break instead?
-
             if found_last_names:
                 # for now we'll store double last names and first names together in one field, so we only need one split
                 split_pos = self.full_name.find(found_last_names[-1])
                 first_name = self.full_name[:split_pos].strip()
                 last_name = self.full_name[split_pos:].strip()
                 # we can only really store prefixes with single last names
-                if len(found_last_names) == 1:
+                if len(found_last_names) == 1 and len(pos_prefix) and prefixes_are_sequential:
                     prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip() or None
 
         if self.is_real_last_name(last_name):

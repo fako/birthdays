@@ -92,22 +92,26 @@ class TestSources(TestCase):
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "Frans")
         instance = Person()
-        instance.full_name = "Fako Berkers-Raaphorst"
-        instance.split_full_name()
-        self.assertEqual(instance.first_name, "Fako")
-        self.assertEqual(instance.prefix, None)
-        self.assertEqual(instance.last_name, "Berkers, Raaphorst")
         instance.full_name = "Bart 's Heeren Loo Midden-Nederland"
         instance.split_full_name()
         self.assertEqual(instance.first_name, "Bart")
-        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.prefix, "'s")
         self.assertEqual(instance.last_name, "'s Heeren Loo Midden-Nederland")
+
+    def test_split_name_double_last_name(self):
         instance = Person()
         instance.full_name = "Synthia Rosalie Frans van der Snoek (de Jong)"
         instance.split_full_name()
-        self.assertEqual(instance.first_name, "Synthia Rosalie Frans")
+        self.assertEqual(instance.first_name, None)
         self.assertEqual(instance.prefix, None)
-        self.assertEqual(instance.last_name, "van der Snoek, de Jong")
+        self.assertEqual(instance.last_name, None)
+        instance = Person()
+        instance.full_name = "Fako Berkers-Raaphorst"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, None)
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, None)
+
 
     def test_soccer_split_name(self):
         instance = SoccerSource()
@@ -124,4 +128,4 @@ class TestSources(TestCase):
         instance.props = {}
         instance.save()
         uri = instance.get_uri()
-        self.assertEqual(uri, "{}/admin/birthdays/nbasource/16/".format(settings.BIRTHDAYS_DOMAIN))
+        self.assertEqual(uri, "{}/admin/birthdays/nbasource/12/".format(settings.BIRTHDAYS_DOMAIN))
