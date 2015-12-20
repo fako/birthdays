@@ -68,12 +68,6 @@ class TestSources(TestCase):
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "Dokter")
         instance = Person()
-        instance.full_name = "Fako Berkers-Raaphorst"
-        instance.split_full_name()
-        self.assertEqual(instance.first_name, "Fako")
-        self.assertEqual(instance.prefix, None)
-        self.assertEqual(instance.last_name, "Berkers, Raaphorst")
-        instance = Person()
         instance.full_name = "Gert Sup?r"
         instance.split_full_name()
         self.assertEqual(instance.first_name, None)
@@ -98,11 +92,22 @@ class TestSources(TestCase):
         self.assertEqual(instance.prefix, None)
         self.assertEqual(instance.last_name, "Frans")
         instance = Person()
-        instance.full_name = "Synthia Rosalie Frans van der Snoek (van der Spek)"
+        instance.full_name = "Fako Berkers-Raaphorst"
         instance.split_full_name()
-        self.assertEqual(instance.first_name, "Synthia Rosalie")
+        self.assertEqual(instance.first_name, "Fako")
         self.assertEqual(instance.prefix, None)
-        self.assertEqual(instance.last_name, "van der Snoek, van der Spek")
+        self.assertEqual(instance.last_name, "Berkers, Raaphorst")
+        instance.full_name = "Bart 's Heeren Loo Midden-Nederland"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Bart")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "'s Heeren Loo Midden-Nederland")
+        instance = Person()
+        instance.full_name = "Synthia Rosalie Frans van der Snoek (de Jong)"
+        instance.split_full_name()
+        self.assertEqual(instance.first_name, "Synthia Rosalie Frans")
+        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.last_name, "van der Snoek, de Jong")
 
     def test_soccer_split_name(self):
         instance = SoccerSource()
