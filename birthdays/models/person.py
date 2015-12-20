@@ -161,11 +161,12 @@ class PersonMixin(object):
         if not len(names) > 1:
             return
 
+        first_name = None
+        last_name = None
+        prefix = None
+
         if len(names) == 2:
-            self.first_name, self.last_name = names
-            if self.is_real_last_name(self.last_name):
-                self.save()
-            return  # early return prevents indentation, which is easier to read IMO
+            first_name, last_name = names
 
         # prefix check
         pos_prefix = []
@@ -175,14 +176,12 @@ class PersonMixin(object):
 
         # split with single first name and prefix
         if len(pos_prefix) and pos_prefix[0] == 1:
-            self.first_name = " ".join(names[:1]).strip()
-            self.last_name = " ".join(names[1:]).strip()
-            self.prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
-            if self.is_real_last_name(self.last_name):
-                self.save()
+            first_name = " ".join(names[:1]).strip()
+            last_name = " ".join(names[1:]).strip()
+            prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
 
         # split with double first name or double last name or both
-        else:
+        if first_name is None and last_name is None:
 
             reversed_names = list(reversed(names))
             found_last_names = []
@@ -199,12 +198,16 @@ class PersonMixin(object):
             if found_last_names:
                 # for now we'll store double last names and first names together in one field, so we only need one split
                 split_pos = self.full_name.find(found_last_names[-1])
-                self.first_name = self.full_name[:split_pos].strip()
-                self.last_name = self.full_name[split_pos:].strip()
+                first_name = self.full_name[:split_pos].strip()
+                last_name = self.full_name[split_pos:].strip()
                 # we can only really store prefixes with single last names
                 if len(found_last_names) == 1:
-                    self.prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
-                self.save()
+                    prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
+
+        if self.is_real_last_name(last_name):
+            self.first_name = first_name
+            self.last_name = last_name
+            self.prefix = prefix
 
         return
 
