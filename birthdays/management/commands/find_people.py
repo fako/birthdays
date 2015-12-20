@@ -125,7 +125,6 @@ class Command(BaseCommand):
         parser.add_argument(
             '-F', '--fuzzy',
             action="store_true",
-            nargs="?",
             default=False,
             help="",
             dest="fuzzy"
