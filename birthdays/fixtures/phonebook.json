@@ -80,6 +80,38 @@
     "pk": 5
 },
 {
+    "fields": {
+        "first_name": null,
+        "last_name": "Dokter",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 6
+},
+{
+    "fields": {
+        "first_name": null,
+        "last_name": "Raaphorst",
+        "full_name": null,
+        "props": {},
+        "birth_date": null,
+        "master": null,
+        "polymorphic_ctype": [
+            "birthdays",
+            "phonebooksource"
+        ]
+    },
+    "model": "birthdays.personsource",
+    "pk": 7
+},
+{
     "fields": {},
     "model": "birthdays.phonebooksource",
     "pk": 1
@@ -103,5 +135,15 @@
     "fields": {},
     "model": "birthdays.phonebooksource",
     "pk": 5
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 6
+},
+{
+    "fields": {},
+    "model": "birthdays.phonebooksource",
+    "pk": 7
 }
 ]
