@@ -8,6 +8,8 @@ from birthdays.models import NBASource, Person, SoccerSource
 
 class TestSources(TestCase):
 
+    fixtures = ["phonebook.json"]
+
     def test_nba_split_name(self):
         instance = NBASource()
         instance.full_name = "Spek, H. van der"
@@ -45,7 +47,7 @@ class TestSources(TestCase):
         instance.full_name = "Lotte Beatrice van der Snoek"
         instance.split_full_name()
         self.assertEqual(instance.first_name, "Lotte Beatrice")
-        self.assertEqual(instance.prefix, None)
+        self.assertEqual(instance.prefix, "van der")
         self.assertEqual(instance.last_name, "van der Snoek")
         instance = Person()
         instance.full_name = "Ellen Bijsterbosch"

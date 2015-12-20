@@ -202,7 +202,7 @@ class PersonMixin(object):
                 last_name = self.full_name[split_pos:].strip()
                 # we can only really store prefixes with single last names
                 if len(found_last_names) == 1:
-                    prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip()
+                    prefix = " ".join(name for i, name in enumerate(names) if i in pos_prefix).strip() or None
 
         if self.is_real_last_name(last_name):
             self.first_name = first_name
