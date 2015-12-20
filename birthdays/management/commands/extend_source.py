@@ -58,8 +58,8 @@ class Command(BaseCommand):
 
     @staticmethod
     def add_cities(source_model):
-        for person_source in source_model.objects.filter(props__has_key="city"):
-            if person_source.city:
+        for person_source in source_model.objects.filter(city__isnull=True, props__has_key="city"):
+            if person_source.city or person_source.props["city"] is None:
                 continue
             person_source.city = person_source.props["city"]
             person_source.save()
