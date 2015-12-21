@@ -82,8 +82,46 @@ class Command(BaseCommand):
     def remove_minors(source_model):
         from datetime import datetime
         source_model.objects \
-            .filter(birth_date__lt=datetime.strptime("31-10-2015", "%d-%m-%Y")) \
+            .filter(birth_date__lt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
             .delete()
+        from birthdays.models import Person
+        Person.objects \
+            .filter(birth_date__lt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
+            .delete()
+
+    @staticmethod
+    def split_names(source_model):
+        from birthdays.models import (
+            PhoneBookSource,
+            SchoolBankSource,
+            NBASource,
+            TriathlonSource,
+            MusicSocietySource,
+            KNACSource,
+            HockeySource,
+            HobbyJournalSource,
+            FiftyPlusSource
+        )
+        query_set = source_model.objects.not_instance_of(
+            PhoneBookSource,
+            SchoolBankSource,
+            NBASource,
+            TriathlonSource,
+            MusicSocietySource,
+            KNACSource,
+            HockeySource,
+            HobbyJournalSource
+        )
+        for source in query_set:
+            if source.full_name:
+                source.split_full_name(force=True)
+                source.save()
+        for source in FiftyPlusSource.objects.all():
+            full_name = source.props["name"]
+            if full_name and not full_name == "Anoniem":
+                source.full_name = full_name
+                source.split_full_name(force=True)
+                source.save()
 
     @staticmethod
     def add_city_soccer_source(source_model):
