@@ -102,26 +102,28 @@ class Command(BaseCommand):
             HobbyJournalSource,
             FiftyPlusSource
         )
-        query_set = source_model.objects.not_instance_of(
-            PhoneBookSource,
-            SchoolBankSource,
-            NBASource,
-            TriathlonSource,
-            MusicSocietySource,
-            KNACSource,
-            HockeySource,
-            HobbyJournalSource
-        )
-        for source in query_set:
-            if source.full_name:
-                source.split_full_name(force=True)
-                source.save()
-        for source in FiftyPlusSource.objects.all():
-            full_name = source.props["name"]
-            if full_name and not full_name == "Anoniem":
-                source.full_name = full_name
-                source.split_full_name(force=True)
-                source.save()
+        for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+            print(letter)
+            query_set = source_model.objects.not_instance_of(
+                PhoneBookSource,
+                SchoolBankSource,
+                NBASource,
+                TriathlonSource,
+                MusicSocietySource,
+                KNACSource,
+                HockeySource,
+                HobbyJournalSource
+            ).filter(full_name__startswith=letter)
+            for source in query_set:
+                if source.full_name:
+                    source.split_full_name(force=True)
+                    source.save()
+            for source in FiftyPlusSource.objects.filter(full_name__startswith=letter):
+                full_name = source.props["name"]
+                if full_name and not full_name == "Anoniem":
+                    source.full_name = full_name
+                    source.split_full_name(force=True)
+                    source.save()
 
     @staticmethod
     def add_city_soccer_source(source_model):
