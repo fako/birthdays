@@ -83,6 +83,7 @@ class Command(BaseCommand):
         from datetime import datetime
         source_model.objects \
             .filter(birth_date__lt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
+            .non_polymorphic() \
             .delete()
         from birthdays.models import Person
         Person.objects \
