@@ -216,8 +216,11 @@ class PersonMixin(object):
 
     @staticmethod
     def is_real_last_name(last_name_check):
+        if last_name_check is None:
+            return
         from birthdays.models import PhoneBookSource  # inline import to prevent circular imports
-        return PhoneBookSource.objects.filter(last_name__iexact=last_name_check).exists()  # case-insensitive db query for the name in PhoneBook records
+        last_name_check = last_name_check.capitalize()
+        return PhoneBookSource.objects.filter(last_name__exact=last_name_check).exists()  # case-insensitive db query for the name in PhoneBook records
 
     def __unicode__(self):
         return "{} {}".format(self.__class__.__name__, self.id)
