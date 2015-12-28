@@ -46,7 +46,7 @@ class Command(BaseCommand):
     @staticmethod
     def extend_master(source_model):
         master_set = Person.objects.all()
-        for person_source in source_model.objects.all():
+        for person_source in source_model.objects.filter(master__isnull=True):
             try:
                 master = master_set.get(full_name=person_source.full_name)
             except Person.DoesNotExist:
@@ -119,12 +119,16 @@ class Command(BaseCommand):
                 if source.full_name:
                     source.split_full_name(force=True)
                     source.save()
-            for source in FiftyPlusSource.objects.filter(full_name__startswith=letter):
-                full_name = source.props["name"]
-                if full_name and not full_name == "Anoniem":
-                    source.full_name = full_name
-                    source.split_full_name(force=True)
-                    source.save()
+
+    @staticmethod
+    def fifty_plus_names(source_model):
+        from birthdays.models import FiftyPlusSource
+        for source in FiftyPlusSource.objects.all():
+            full_name = source.props["name"]
+            if full_name and not full_name == "Anoniem":
+                source.full_name = full_name
+                source.split_full_name(force=True)
+                source.save()
 
     @staticmethod
     def add_city_soccer_source(source_model):
