@@ -132,7 +132,16 @@ class Command(BaseCommand):
 
     @staticmethod
     def add_city_soccer_source(source_model):
-        pass
+        from pandas import read_csv
+        data_frame = read_csv("output/clubs.csv")
+        sites_and_city = dict(zip(list(data_frame.site), list(data_frame.city)))
+        for person in source_model.objects.filter(city__isnull=True)[:10]
+            site_end_pos = person.props["profile"].find("//", 8)
+            if not site_end_pos > 0:
+               continue
+            site = person.props["profile"][site_end_pos+1]
+            print(site)
+
 
     def add_arguments(self, parser):
         parser.add_argument(
