@@ -59,13 +59,14 @@ class Command(BaseCommand):
     @staticmethod
     def add_cities(source_model):
         from birthdays.models import SchoolBankSource
-        for person_source in source_model.objects \
-                .not_instance_of(SchoolBankSource) \
-                .filter(city__isnull=True, props__has_key="city"):
-            if person_source.city or person_source.props["city"] is None:
-                continue
-            person_source.city = person_source.props["city"]
-            person_source.save()
+        for letter in "MNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz":
+            print(letter)
+            for person_source in source_model.objects \
+                    .filter(city__isnull=True, props__has_key="city", full_name__startswith=letter):
+                if person_source.city or person_source.props["city"] is None:
+                    continue
+                person_source.city = person_source.props["city"]
+                person_source.save()
 
     @staticmethod
     def add_city_person(source_model):
@@ -82,12 +83,12 @@ class Command(BaseCommand):
     def remove_minors(source_model):
         from datetime import datetime
         source_model.objects \
-            .filter(birth_date__lt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
+            .filter(birth_date__gt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
             .non_polymorphic() \
             .delete()
         from birthdays.models import Person
         Person.objects \
-            .filter(birth_date__lt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
+            .filter(birth_date__gt=datetime.strptime("28-02-1997", "%d-%m-%Y")) \
             .delete()
 
     @staticmethod
@@ -103,21 +104,12 @@ class Command(BaseCommand):
             HobbyJournalSource,
             FiftyPlusSource
         )
-        for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwqyz":
             print(letter)
-            query_set = source_model.objects.not_instance_of(
-                PhoneBookSource,
-                SchoolBankSource,
-                NBASource,
-                TriathlonSource,
-                MusicSocietySource,
-                KNACSource,
-                HockeySource,
-                HobbyJournalSource
-            ).filter(full_name__startswith=letter)
+            query_set = source_model.objects.filter(full_name__startswith=letter)
             for source in query_set:
                 if source.full_name:
-                    source.split_full_name(force=True)
+                    source.split_full_name()
                     source.save()
 
     @staticmethod
@@ -135,12 +127,17 @@ class Command(BaseCommand):
         from pandas import read_csv
         data_frame = read_csv("output/clubs.csv")
         sites_and_city = dict(zip(list(data_frame.site), list(data_frame.city)))
-        for person in source_model.objects.filter(city__isnull=True)[:10]
+        for person in source_model.objects.filter(city__isnull=True):
             site_end_pos = person.props["profile"].find("//", 8)
             if not site_end_pos > 0:
                continue
-            site = person.props["profile"][site_end_pos+1]
-            print(site)
+            site = person.props["profile"][:site_end_pos+1]
+            if site in sites_and_city:
+                person.city = sites_and_city[site]
+                person.save()
+                print("added city")
+            else:
+                print("site not found:", site)
 
 
     def add_arguments(self, parser):

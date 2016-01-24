@@ -3,7 +3,7 @@ import-wiki:
 	python ./manage.py extend add_to_master -s WikiSource
 
 import-telephone:
-	python ./manage.py input from_mysql_table -f telefoonBoekGemeente -s PhoneBookSource -m "gemeente=district&lastname=last_name" 
+	python ./manage.py input_source from_mysql_table -f white_subscriber -s PhoneBookSource -m "gemeente=district&lastname=last_name" 
 
 import-nba:
 	python ./manage.py input from_mysql_table -f nba -s NBASource -m "naam=name&voornaam=first_name&geboortedatum=birth_date&stad=city"
